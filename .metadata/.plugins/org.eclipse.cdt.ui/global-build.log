@@ -1,0 +1,210 @@
+12:33:18 **** Incremental Build of configuration Release for project blinky ****
+make -j12 all 
+arm-none-eabi-size  blinky.elf 
+   text	   data	    bss	    dec	    hex	filename
+   7324	     12	   1708	   9044	   2354	blinky.elf
+Finished building: default.size.stdout
+ 
+12:33:24 **** Incremental Build of configuration Debug for project blinky ****
+make -j12 all 
+arm-none-eabi-size  blinky.elf 
+   text	   data	    bss	    dec	    hex	filename
+  11620	     12	   1708	  13340	   341c	blinky.elf
+Finished building: default.size.stdout
+ 
+12:35:03 **** Incremental Build of configuration Debug for project blinky ****
+make -j12 all 
+arm-none-eabi-size  blinky.elf 
+   text	   data	    bss	    dec	    hex	filename
+  11620	     12	   1708	  13340	   341c	blinky.elf
+Finished building: default.size.stdout
+ 
+12:39:11 **** Incremental Build of configuration Debug for project blinky ****
+make -j12 all 
+arm-none-eabi-size  blinky.elf 
+   text	   data	    bss	    dec	    hex	filename
+  11620	     12	   1708	  13340	   341c	blinky.elf
+Finished building: default.size.stdout
+ 
+12:39:42 **** Incremental Build of configuration Debug for project blinky ****
+make -j12 all 
+arm-none-eabi-size  blinky.elf 
+   text	   data	    bss	    dec	    hex	filename
+  11620	     12	   1708	  13340	   341c	blinky.elf
+Finished building: default.size.stdout
+ 
+12:39:45 **** Incremental Build of configuration Debug for project blinky ****
+make -j12 all 
+arm-none-eabi-size  blinky.elf 
+   text	   data	    bss	    dec	    hex	filename
+  11620	     12	   1708	  13340	   341c	blinky.elf
+Finished building: default.size.stdout
+ 
+12:42:23 **** Incremental Build of configuration Debug for project blinky ****
+make -j12 all 
+arm-none-eabi-size  blinky.elf 
+   text	   data	    bss	    dec	    hex	filename
+  11620	     12	   1708	  13340	   341c	blinky.elf
+Finished building: default.size.stdout
+ 
+12:42:42 **** Incremental Build of configuration Debug for project blinky ****
+make -j12 all 
+arm-none-eabi-size  blinky.elf 
+   text	   data	    bss	    dec	    hex	filename
+  11620	     12	   1708	  13340	   341c	blinky.elf
+Finished building: default.size.stdout
+ 
+12:50:46 **** Incremental Build of configuration Debug for project blinky ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32L433xx -c -I../Core/Inc -I../Drivers/STM32L4xx_HAL_Driver/Inc -I../Drivers/STM32L4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32L4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc -o "blinky.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\yuzek\Documents\STM32\Mikrodatorteknik_HT2026\blinky\STM32L433RCTXP_FLASH.ld" --specs=nosys.specs -Wl,-Map="blinky.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: blinky.elf
+ 
+arm-none-eabi-size  blinky.elf 
+arm-none-eabi-objdump -h -S blinky.elf  > "blinky.list"
+   text	   data	    bss	    dec	    hex	filename
+  11616	     12	   1708	  13336	   3418	blinky.elf
+Finished building: default.size.stdout
+ 
+Finished building: blinky.list
+ 
+16:15:25 **** Incremental Build of configuration Debug for project blinky ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32L433xx -c -I../Core/Inc -I../Drivers/STM32L4xx_HAL_Driver/Inc -I../Drivers/STM32L4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32L4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:109:66: error: passing argument 2 of 'sprintf' makes pointer from integer without a cast [-Wint-conversion]
+  109 |           size_t OUTPUT_SIZE = sprintf("Blinky has blicked: %d", counter);
+      |                                                                  ^~~~~~~
+      |                                                                  |
+      |                                                                  int
+In file included from ../Core/Src/main.c:24:
+C:\ST\STM32CubeIDE_2.2.0\STM32CubeIDE\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.14.3.rel1.win32_1.0.100.202602081740\tools\bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/include/stdio.h:250:36: note: expected 'const char * restrict' but argument is of type 'int'
+  250 | int     sprintf (char *__restrict, const char *__restrict, ...)
+      |                                    ^
+../Core/Src/main.c:110:48: error: 'str' undeclared (first use in this function)
+  110 |           HAL_UART_Transmit(&huart2, (uint8_t*)str, 0, HAL_MAX_DELAY);
+      |                                                ^~~
+../Core/Src/main.c:110:48: note: each undeclared identifier is reported only once for each function it appears in
+../Core/Src/main.c:109:18: warning: unused variable 'OUTPUT_SIZE' [-Wunused-variable]
+  109 |           size_t OUTPUT_SIZE = sprintf("Blinky has blicked: %d", counter);
+      |                  ^~~~~~~~~~~
+../Core/Src/main.c:93:8: warning: unused variable 'output' [-Wunused-variable]
+   93 |   char output[64] = {'\0'};
+      |        ^~~~~~
+make: *** [Core/Src/subdir.mk:34: Core/Src/main.o] Error 1
+"make -j12 all" terminated with exit code 2. Build might be incomplete.
+16:17:39 **** Incremental Build of configuration Debug for project blinky ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32L433xx -c -I../Core/Inc -I../Drivers/STM32L4xx_HAL_Driver/Inc -I../Drivers/STM32L4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32L4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:110:48: error: 'str' undeclared (first use in this function)
+  110 |           HAL_UART_Transmit(&huart2, (uint8_t*)str, 0, HAL_MAX_DELAY);
+      |                                                ^~~
+../Core/Src/main.c:110:48: note: each undeclared identifier is reported only once for each function it appears in
+../Core/Src/main.c:109:18: warning: unused variable 'OUTPUT_SIZE' [-Wunused-variable]
+  109 |           size_t OUTPUT_SIZE = sprintf(output, "Blinky has blicked: %d", counter);
+      |                  ^~~~~~~~~~~
+make: *** [Core/Src/subdir.mk:34: Core/Src/main.o] Error 1
+"make -j12 all" terminated with exit code 2. Build might be incomplete.
+16:18:06 **** Incremental Build of configuration Debug for project blinky ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32L433xx -c -I../Core/Inc -I../Drivers/STM32L4xx_HAL_Driver/Inc -I../Drivers/STM32L4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32L4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc -o "blinky.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\yuzek\Documents\STM32\Mikrodatorteknik_HT2026\blinky\STM32L433RCTXP_FLASH.ld" --specs=nosys.specs -Wl,-Map="blinky.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: blinky.elf
+ 
+arm-none-eabi-size  blinky.elf 
+arm-none-eabi-objdump -h -S blinky.elf  > "blinky.list"
+   text	   data	    bss	    dec	    hex	filename
+  14612	     92	   2036	  16740	   4164	blinky.elf
+Finished building: default.size.stdout
+ 
+Finished building: blinky.list
+ 
+16:18:40 **** Incremental Build of configuration Debug for project blinky ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32L433xx -c -I../Core/Inc -I../Drivers/STM32L4xx_HAL_Driver/Inc -I../Drivers/STM32L4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32L4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc -o "blinky.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\yuzek\Documents\STM32\Mikrodatorteknik_HT2026\blinky\STM32L433RCTXP_FLASH.ld" --specs=nosys.specs -Wl,-Map="blinky.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: blinky.elf
+ 
+arm-none-eabi-size  blinky.elf 
+arm-none-eabi-objdump -h -S blinky.elf  > "blinky.list"
+   text	   data	    bss	    dec	    hex	filename
+  14616	     92	   2036	  16744	   4168	blinky.elf
+Finished building: default.size.stdout
+ 
+Finished building: blinky.list
+ 
+16:19:36 **** Incremental Build of configuration Debug for project blinky ****
+make -j12 all 
+arm-none-eabi-size  blinky.elf 
+   text	   data	    bss	    dec	    hex	filename
+  14616	     92	   2036	  16744	   4168	blinky.elf
+Finished building: default.size.stdout
+ 
+16:19:52 **** Incremental Build of configuration Debug for project blinky ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32L433xx -c -I../Core/Inc -I../Drivers/STM32L4xx_HAL_Driver/Inc -I../Drivers/STM32L4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32L4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:109:73: warning: embedded '\0' in format [-Wformat-contains-nul]
+  109 |           size_t OUTPUT_SIZE = sprintf(output, "Blinky has blicked: %d\n\0", counter);
+      |                                                                         ^~
+arm-none-eabi-gcc -o "blinky.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\yuzek\Documents\STM32\Mikrodatorteknik_HT2026\blinky\STM32L433RCTXP_FLASH.ld" --specs=nosys.specs -Wl,-Map="blinky.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: blinky.elf
+ 
+arm-none-eabi-size  blinky.elf 
+arm-none-eabi-objdump -h -S blinky.elf  > "blinky.list"
+   text	   data	    bss	    dec	    hex	filename
+  14620	     92	   2036	  16748	   416c	blinky.elf
+Finished building: default.size.stdout
+ 
+Finished building: blinky.list
+ 
+16:20:53 **** Incremental Build of configuration Debug for project blinky ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32L433xx -c -I../Core/Inc -I../Drivers/STM32L4xx_HAL_Driver/Inc -I../Drivers/STM32L4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32L4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc -o "blinky.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\yuzek\Documents\STM32\Mikrodatorteknik_HT2026\blinky\STM32L433RCTXP_FLASH.ld" --specs=nosys.specs -Wl,-Map="blinky.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: blinky.elf
+ 
+arm-none-eabi-size  blinky.elf 
+arm-none-eabi-objdump -h -S blinky.elf  > "blinky.list"
+   text	   data	    bss	    dec	    hex	filename
+  14616	     92	   2036	  16744	   4168	blinky.elf
+Finished building: default.size.stdout
+ 
+Finished building: blinky.list
+ 
+16:21:40 **** Incremental Build of configuration Debug for project blinky ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32L433xx -c -I../Core/Inc -I../Drivers/STM32L4xx_HAL_Driver/Inc -I../Drivers/STM32L4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32L4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc -o "blinky.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\yuzek\Documents\STM32\Mikrodatorteknik_HT2026\blinky\STM32L433RCTXP_FLASH.ld" --specs=nosys.specs -Wl,-Map="blinky.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: blinky.elf
+ 
+arm-none-eabi-size  blinky.elf 
+arm-none-eabi-objdump -h -S blinky.elf  > "blinky.list"
+   text	   data	    bss	    dec	    hex	filename
+  14616	     92	   2036	  16744	   4168	blinky.elf
+Finished building: default.size.stdout
+ 
+Finished building: blinky.list
+ 
+16:22:29 **** Incremental Build of configuration Debug for project blinky ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32L433xx -c -I../Core/Inc -I../Drivers/STM32L4xx_HAL_Driver/Inc -I../Drivers/STM32L4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32L4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc -o "blinky.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\yuzek\Documents\STM32\Mikrodatorteknik_HT2026\blinky\STM32L433RCTXP_FLASH.ld" --specs=nosys.specs -Wl,-Map="blinky.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: blinky.elf
+ 
+arm-none-eabi-size  blinky.elf 
+arm-none-eabi-objdump -h -S blinky.elf  > "blinky.list"
+   text	   data	    bss	    dec	    hex	filename
+  14620	     92	   2036	  16748	   416c	blinky.elf
+Finished building: default.size.stdout
+ 
+Finished building: blinky.list
+ 
+16:23:31 **** Incremental Build of configuration Debug for project blinky ****
+make -j12 all 
+arm-none-eabi-size  blinky.elf 
+   text	   data	    bss	    dec	    hex	filename
+  14620	     92	   2036	  16748	   416c	blinky.elf
+Finished building: default.size.stdout
+ 
