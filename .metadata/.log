@@ -1086,3 +1086,26 @@ COM3
 
 !ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2026-09-01 15:41:08.918
 !MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY org.eclipse.cdt.core 1 0 2026-09-01 16:57:01.997
+!MESSAGE Indexed 'blinky' (23 sources, 117 headers) in 5,64 sec: 11 400 declarations; 50 668 references; 3 unresolved inclusions; 47 syntax errors; 169 unresolved names (0,27 %)
+!SESSION 2026-09-01 17:09:28.936 -----------------------------------------------
+eclipse.buildId=Version 2.2.0
+java.version=21.0.10
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_GB
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2026-09-01 17:09:38.672
+!MESSAGE Log4j2 initialized with config file C:\Users\yuzek\Documents\STM32\Mikrodatorteknik_HT2026\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2026-09-01 17:09:43.692
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-09-01 17:09:44.388
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM3
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-09-01 17:09:44.388
+!MESSAGE port: COM3
