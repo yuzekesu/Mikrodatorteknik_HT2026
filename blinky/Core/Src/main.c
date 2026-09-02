@@ -22,6 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
+#include "print.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -104,14 +105,17 @@ int main(void)
     /* USER CODE BEGIN 3 */
 
 	  HAL_GPIO_WritePin(LD4_GPIO_Port, LD4_Pin, GPIO_PIN_SET);
-	  HAL_Delay(200);
+	  HAL_Delay(1200);
 	  HAL_GPIO_WritePin(LD4_GPIO_Port, LD4_Pin, GPIO_PIN_RESET);
-	  HAL_Delay(200);
-	  size_t OUTPUT_SIZE = sprintf(output, "Blinky has blicked: %d\r\n", ++counter);
-	  HAL_UART_Transmit(&huart2, (uint8_t*)output, OUTPUT_SIZE, HAL_MAX_DELAY);
+	  HAL_Delay(1200);
+	  print(&huart2,"Blinky has blicked: %d\r\n", ++counter);
+	  // size_t OUTPUT_SIZE = sprintf(output, "Blinky has blicked: %d\r\n", ++counter);
+	  // HAL_UART_Transmit(&huart2, (uint8_t*)output, OUTPUT_SIZE, HAL_MAX_DELAY);
+	  fprintf(stdout,  )
 	  HAL_GPIO_TogglePin(LED_YLW_GPIO_Port, LED_YLW_Pin);
   /* USER CODE END 3 */
 }
+#define abc abd
 }
 /**
   * @brief System Clock Configuration
