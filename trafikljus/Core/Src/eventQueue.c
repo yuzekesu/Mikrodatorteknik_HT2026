@@ -15,7 +15,7 @@ int evq_rear_ix = 0;
 void evq_push_back(enum event e) {
 	if (evq_front_ix == evq_rear_ix + 1) return;
 	else if (evq_front_ix == 0 && evq_rear_ix == EVQ_SIZE - 1) return;
-	evq[evq_front_ix] = e;
+	evq[evq_rear_ix] = e;
 	if (evq_rear_ix == EVQ_SIZE - 1) evq_rear_ix = 0;
 	else ++evq_rear_ix;
 }

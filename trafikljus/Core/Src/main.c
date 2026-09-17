@@ -23,10 +23,94 @@
 /* USER CODE BEGIN Includes */
 #include "trafikljus.h"
 #include "eventState.h"
+#include "eventQueue.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
+	if (GPIO_Pin & 1u << 13) {
+		while(evq_pop_front() != ev_none);
+		evq_push_back(ev_button_push);
+	}
+}
+void handle_state(enum state* pState, enum event event, uint32_t* pLastTick, uint32_t* pTickLeft, int* pStateJustTransitioned){
+	switch(*pState){
+		case s_init:
+			if (event == ev_button_push) {
+				*pState = s_people_walk;
+				*pLastTick = HAL_GetTick();
+			}
+			break;
+		case s_people_walk:
+			if (!*pStateJustTransitioned) {
+				*pTickLeft = 10000;
+				*pStateJustTransitioned = 1;
+			}
+			if (event == ev_state_timeout) {
+				*pState = s_car_standing_by;
+				*pStateJustTransitioned = 0;
+			}
+			break;
+		case s_car_standing_by:
+			if (!*pStateJustTransitioned) {
+				*pTickLeft = 2000;
+				*pStateJustTransitioned = 1;
+			}
+			if (event == ev_state_timeout) {
+				*pState = s_people_stop;
+				*pStateJustTransitioned = 0;
+			}
+			break;
+		case s_people_stop:
+			if (!*pStateJustTransitioned){
+				*pTickLeft = 1000;
+				*pStateJustTransitioned = 1;
+			}
+			if (event == ev_state_timeout) {
+				*pState = s_car_go;
+				*pStateJustTransitioned = 0;
+			}
+			break;
+		case s_car_go:
+			if (event == ev_button_push){
+				*pState = s_pushed_wait;
+				*pLastTick = HAL_GetTick();
+			}
+			break;
+		case s_pushed_wait:
+			if (!*pStateJustTransitioned){
+				*pTickLeft = 2000;
+				*pStateJustTransitioned = 1;
+			}
+			if (event == ev_state_timeout) {
+				*pState = s_car_is_stopping;
+				*pStateJustTransitioned = 0;
+			}
+			break;
+		case s_car_is_stopping:
+			if (!*pStateJustTransitioned){
+				*pTickLeft = 1000;
+				*pStateJustTransitioned = 1;
+			}
+			if (event == ev_state_timeout) {
+				*pState = s_car_stop;
+				*pStateJustTransitioned = 0;
+			}
+			break;
+		case s_car_stop:
+			if (!*pStateJustTransitioned){
+				*pTickLeft = 2000;
+				*pStateJustTransitioned = 1;
+			}
+			if (event == ev_state_timeout) {
+				*pState = s_people_walk;
+				*pStateJustTransitioned = 0;
+			}
+			break;
+		default: break;
+	  }
+}
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -69,6 +153,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -77,15 +162,10 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-
-  int _initialized = 0;
   enum state state = s_init;
   enum event event = ev_none;
   uint32_t ticks_left_in_state, curr_tick, last_tick;
   ticks_left_in_state = curr_tick = last_tick = 0;
-  int last_press = 0;
-  int curr_press = 0;
-
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -110,103 +190,22 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 	  // initialize event handler;
-	  event = ev_none;
+	  int _initialized = 0;
 	  // timeout handler;
 	  curr_tick = HAL_GetTick();
 	  if (curr_tick - last_tick > 0) {
 		  if (curr_tick - last_tick >= ticks_left_in_state) {
 			  ticks_left_in_state = 0;
-			  event = ev_state_timeout;
+			  evq_push_back(ev_state_timeout);
 		  }
 		  else {
 			  ticks_left_in_state -= curr_tick - last_tick;
 		  }
 			  last_tick = curr_tick;
 	  }
-	  // button handler;
-	  last_press = curr_press;
-	  curr_press = is_button_pressed();
-	  int pressed = curr_press && !last_press;
-	  if ( pressed )
-	  {
-		  event = ev_button_push;
-	  }
 
-	  switch(state){
-		case s_init:
-			if (event == ev_button_push) {
-				state = s_people_walk;
-				last_tick = HAL_GetTick();
-			}
-			break;
-		case s_people_walk:
-			if (!_initialized) {
-				ticks_left_in_state = 10000;
-				_initialized = 1;
-			}
-			if (event == ev_state_timeout) {
-				state = s_car_standing_by;
-				_initialized = 0;
-			}
-			break;
-		case s_car_standing_by:
-			if (!_initialized) {
-				ticks_left_in_state = 2000;
-				_initialized = 1;
-			}
-			if (event == ev_state_timeout) {
-				state = s_people_stop;
-				_initialized = 0;
-			}
-			break;
-		case s_people_stop:
-			if (!_initialized){
-				ticks_left_in_state = 1000;
-				_initialized = 1;
-			}
-			if (event == ev_state_timeout) {
-				state = s_car_go;
-				_initialized = 0;
-			}
-			break;
-		case s_car_go:
-			if (event == ev_button_push){
-				state = s_pushed_wait;
-				last_tick = HAL_GetTick();
-			}
-			break;
-		case s_pushed_wait:
-			if (!_initialized){
-				ticks_left_in_state = 2000;
-				_initialized = 1;
-			}
-			if (event == ev_state_timeout) {
-				state = s_car_is_stopping;
-				_initialized = 0;
-			}
-			break;
-		case s_car_is_stopping:
-			if (!_initialized){
-				ticks_left_in_state = 1000;
-				_initialized = 1;
-			}
-			if (event == ev_state_timeout) {
-				state = s_car_stop;
-				_initialized = 0;
-			}
-			break;
-		case s_car_stop:
-			if (!_initialized){
-				ticks_left_in_state = 2000;
-				_initialized = 1;
-			}
-			if (event == ev_state_timeout) {
-				state = s_people_walk;
-				_initialized = 0;
-			}
-			break;
-		default: break;
-	  }
+	  event = evq_pop_front();
+	  handle_state(&state, event, &last_tick, &ticks_left_in_state, &_initialized);
 	  set_traffic_lights(state);
   }
   /* USER CODE END 3 */
