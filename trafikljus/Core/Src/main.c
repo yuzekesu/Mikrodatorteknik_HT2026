@@ -28,24 +28,27 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
-	if (GPIO_Pin & 1u << 13) {
-		while(evq_pop_front() != ev_none);
-		evq_push_back(ev_button_push);
-	}
+int is_button_pressed(void){
+	return GPIOC->IDR & 1 << 13;
 }
-void handle_tick(uint32_t* pLastTimeStamp, uint32_t* pCountdown) {
+void handle_tick(enum event* pEvent, uint32_t* pLastTimeStamp, uint32_t* pCountdown) {
 	uint32_t curr_tick_stamp = HAL_GetTick();
 	if (curr_tick_stamp - *pLastTimeStamp > 0) {
 		if (curr_tick_stamp - *pLastTimeStamp >= *pCountdown) {
 			*pCountdown = 0;
-			evq_push_back(ev_state_timeout);
+			*pEvent = ev_state_timeout;
 		}
 		else {
 			*pCountdown -= curr_tick_stamp - *pLastTimeStamp;
 		}
 		*pLastTimeStamp = curr_tick_stamp;
 	}
+}
+void handle_button(enum event* pEvent, int* pLastButtonState){
+	int curr_press = is_button_pressed();
+	int pressed = curr_press && !*pLastButtonState;
+	if ( pressed ) *pEvent = ev_button_push;
+	*pLastButtonState = curr_press;
 }
 struct HANDLE_STATE_DESC {
 	enum state* pState;
@@ -160,9 +163,6 @@ static void MX_USART2_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-int is_button_pressed(void){
-	return GPIOC->IDR & 1 << 13;
-}
 /* USER CODE END 0 */
 
 /**
@@ -183,6 +183,8 @@ int main(void)
 
   /* USER CODE BEGIN Init */
   int _initialized = 0;
+  int curr_press, last_press;
+  curr_press = last_press = 0;
   enum state state = s_init;
   enum event event = ev_none;
   uint32_t ticks_left_in_state, curr_tick, last_tick;
@@ -210,10 +212,12 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  // timeout;
-	  handle_tick(&last_tick, &ticks_left_in_state);
-
-	  event = evq_pop_front();
+	  event = ev_none; // clear the previous event.
+	  // handle timeout;
+	  handle_tick(&event, &last_tick, &ticks_left_in_state);
+	  // handle button press;
+	  handle_button(&event, &last_press);
+	  // FSM;
 	  struct HANDLE_STATE_DESC handle_state_desc = {};
 	  handle_state_desc.event = event;
 	  handle_state_desc.pLastTick = &last_tick;
