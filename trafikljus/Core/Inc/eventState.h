@@ -19,7 +19,7 @@ enum state
 	 s_init,
 	 s_car_go,
 	 s_pushed_wait,
-	 s_car_is_stopping,
+	 s_car_is_about_to_stop,
 	 s_car_stop,
 	 s_people_walk,
 	 s_car_standing_by,

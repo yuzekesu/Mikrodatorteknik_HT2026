@@ -37,7 +37,7 @@ void set_traffic_lights(enum state s)
 	case s_people_stop: _helper_traffic_lights("11010"); break;
 	case s_car_go: _helper_traffic_lights("00110"); break;
 	case s_pushed_wait: _helper_traffic_lights("00110"); break;
-	case s_car_is_stopping: _helper_traffic_lights("01010"); break;
+	case s_car_is_about_to_stop: _helper_traffic_lights("01010"); break;
 	case s_car_stop: _helper_traffic_lights("10010"); break;
 	default: break;
 	}

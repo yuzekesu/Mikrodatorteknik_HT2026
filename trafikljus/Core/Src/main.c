@@ -34,78 +34,98 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 		evq_push_back(ev_button_push);
 	}
 }
-void handle_state(enum state* pState, enum event event, uint32_t* pLastTick, uint32_t* pTickLeft, int* pStateJustTransitioned){
-	switch(*pState){
+void handle_tick(uint32_t* pLastTimeStamp, uint32_t* pCountdown) {
+	uint32_t curr_tick_stamp = HAL_GetTick();
+	if (curr_tick_stamp - *pLastTimeStamp > 0) {
+		if (curr_tick_stamp - *pLastTimeStamp >= *pCountdown) {
+			*pCountdown = 0;
+			evq_push_back(ev_state_timeout);
+		}
+		else {
+			*pCountdown -= curr_tick_stamp - *pLastTimeStamp;
+		}
+		*pLastTimeStamp = curr_tick_stamp;
+	}
+}
+struct HANDLE_STATE_DESC {
+	enum state* pState;
+	enum event event;
+	uint32_t* pLastTick;
+	uint32_t* pTickLeft;
+	int* pStateJustTransitioned;
+};
+void handle_state(struct HANDLE_STATE_DESC desc){
+	switch(*desc.pState){
 		case s_init:
-			if (event == ev_button_push) {
-				*pState = s_people_walk;
-				*pLastTick = HAL_GetTick();
+			if (desc.event == ev_button_push) {
+				*desc.pState = s_people_walk;
+				*desc.pLastTick = HAL_GetTick();
 			}
 			break;
 		case s_people_walk:
-			if (!*pStateJustTransitioned) {
-				*pTickLeft = 10000;
-				*pStateJustTransitioned = 1;
+			if (!*desc.pStateJustTransitioned) {
+				*desc.pTickLeft = 10000;
+				*desc.pStateJustTransitioned = 1;
 			}
-			if (event == ev_state_timeout) {
-				*pState = s_car_standing_by;
-				*pStateJustTransitioned = 0;
+			if (desc.event == ev_state_timeout) {
+				*desc.pState = s_car_standing_by;
+				*desc.pStateJustTransitioned = 0;
 			}
 			break;
 		case s_car_standing_by:
-			if (!*pStateJustTransitioned) {
-				*pTickLeft = 2000;
-				*pStateJustTransitioned = 1;
+			if (!*desc.pStateJustTransitioned) {
+				*desc.pTickLeft = 2000;
+				*desc.pStateJustTransitioned = 1;
 			}
-			if (event == ev_state_timeout) {
-				*pState = s_people_stop;
-				*pStateJustTransitioned = 0;
+			if (desc.event == ev_state_timeout) {
+				*desc.pState = s_people_stop;
+				*desc.pStateJustTransitioned = 0;
 			}
 			break;
 		case s_people_stop:
-			if (!*pStateJustTransitioned){
-				*pTickLeft = 1000;
-				*pStateJustTransitioned = 1;
+			if (!*desc.pStateJustTransitioned){
+				*desc.pTickLeft = 1000;
+				*desc.pStateJustTransitioned = 1;
 			}
-			if (event == ev_state_timeout) {
-				*pState = s_car_go;
-				*pStateJustTransitioned = 0;
+			if (desc.event == ev_state_timeout) {
+				*desc.pState = s_car_go;
+				*desc.pStateJustTransitioned = 0;
 			}
 			break;
 		case s_car_go:
-			if (event == ev_button_push){
-				*pState = s_pushed_wait;
-				*pLastTick = HAL_GetTick();
+			if (desc.event == ev_button_push){
+				*desc.pState = s_pushed_wait;
+				*desc.pLastTick = HAL_GetTick();
 			}
 			break;
 		case s_pushed_wait:
-			if (!*pStateJustTransitioned){
-				*pTickLeft = 2000;
-				*pStateJustTransitioned = 1;
+			if (!*desc.pStateJustTransitioned){
+				*desc.pTickLeft = 2000;
+				*desc.pStateJustTransitioned = 1;
 			}
-			if (event == ev_state_timeout) {
-				*pState = s_car_is_stopping;
-				*pStateJustTransitioned = 0;
+			if (desc.event == ev_state_timeout) {
+				*desc.pState = s_car_is_about_to_stop;
+				*desc.pStateJustTransitioned = 0;
 			}
 			break;
-		case s_car_is_stopping:
-			if (!*pStateJustTransitioned){
-				*pTickLeft = 1000;
-				*pStateJustTransitioned = 1;
+		case s_car_is_about_to_stop:
+			if (!*desc.pStateJustTransitioned){
+				*desc.pTickLeft = 1000;
+				*desc.pStateJustTransitioned = 1;
 			}
-			if (event == ev_state_timeout) {
-				*pState = s_car_stop;
-				*pStateJustTransitioned = 0;
+			if (desc.event == ev_state_timeout) {
+				*desc.pState = s_car_stop;
+				*desc.pStateJustTransitioned = 0;
 			}
 			break;
 		case s_car_stop:
-			if (!*pStateJustTransitioned){
-				*pTickLeft = 2000;
-				*pStateJustTransitioned = 1;
+			if (!*desc.pStateJustTransitioned){
+				*desc.pTickLeft = 2000;
+				*desc.pStateJustTransitioned = 1;
 			}
-			if (event == ev_state_timeout) {
-				*pState = s_people_walk;
-				*pStateJustTransitioned = 0;
+			if (desc.event == ev_state_timeout) {
+				*desc.pState = s_people_walk;
+				*desc.pStateJustTransitioned = 0;
 			}
 			break;
 		default: break;
@@ -162,6 +182,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
+  int _initialized = 0;
   enum state state = s_init;
   enum event event = ev_none;
   uint32_t ticks_left_in_state, curr_tick, last_tick;
@@ -189,23 +210,17 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  // initialize event handler;
-	  int _initialized = 0;
-	  // timeout handler;
-	  curr_tick = HAL_GetTick();
-	  if (curr_tick - last_tick > 0) {
-		  if (curr_tick - last_tick >= ticks_left_in_state) {
-			  ticks_left_in_state = 0;
-			  evq_push_back(ev_state_timeout);
-		  }
-		  else {
-			  ticks_left_in_state -= curr_tick - last_tick;
-		  }
-			  last_tick = curr_tick;
-	  }
+	  // timeout;
+	  handle_tick(&last_tick, &ticks_left_in_state);
 
 	  event = evq_pop_front();
-	  handle_state(&state, event, &last_tick, &ticks_left_in_state, &_initialized);
+	  struct HANDLE_STATE_DESC handle_state_desc = {};
+	  handle_state_desc.event = event;
+	  handle_state_desc.pLastTick = &last_tick;
+	  handle_state_desc.pState = &state;
+	  handle_state_desc.pStateJustTransitioned = &_initialized;
+	  handle_state_desc.pTickLeft = &ticks_left_in_state;
+	  handle_state(handle_state_desc);
 	  set_traffic_lights(state);
   }
   /* USER CODE END 3 */
@@ -357,6 +372,10 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LD4_GPIO_Port, &GPIO_InitStruct);
+
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 
   /* USER CODE BEGIN MX_GPIO_Init_2 */
 
