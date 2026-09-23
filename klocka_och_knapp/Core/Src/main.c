@@ -21,103 +21,12 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "trafikljus.h"
-#include "eventState.h"
-#include "eventQueue.h"
-#include "tick.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
-	if (GPIO_Pin & 1u << 13) {
-		while(evq_pop_front() != ev_none);
-		evq_push_back(ev_button_push);
-	}
-}
-struct HANDLE_STATE_DESC {
-	enum state* pState;
-	enum event event;
-	uint32_t* pTickLeft;
-	int* pStateJustTransitioned;
-};
-void handle_state(struct HANDLE_STATE_DESC desc){
-	switch(*desc.pState){
-		case s_init:
-			if (desc.event == ev_button_push) {
-				*desc.pState = s_people_walk;
-				// *desc.pLastTick = 0;
-			}
-			break;
-		case s_people_walk:
-			if (!*desc.pStateJustTransitioned) {
-				*desc.pTickLeft = 10000;
-				*desc.pStateJustTransitioned = 1;
-			}
-			if (desc.event == ev_state_timeout) {
-				*desc.pState = s_car_standing_by;
-				*desc.pStateJustTransitioned = 0;
-			}
-			break;
-		case s_car_standing_by:
-			if (!*desc.pStateJustTransitioned) {
-				*desc.pTickLeft = 2000;
-				*desc.pStateJustTransitioned = 1;
-			}
-			if (desc.event == ev_state_timeout) {
-				*desc.pState = s_people_stop;
-				*desc.pStateJustTransitioned = 0;
-			}
-			break;
-		case s_people_stop:
-			if (!*desc.pStateJustTransitioned){
-				*desc.pTickLeft = 1000;
-				*desc.pStateJustTransitioned = 1;
-			}
-			if (desc.event == ev_state_timeout) {
-				*desc.pState = s_car_go;
-				*desc.pStateJustTransitioned = 0;
-			}
-			break;
-		case s_car_go:
-			if (desc.event == ev_button_push){
-				*desc.pState = s_pushed_wait;
-				// *desc.pLastTick = 0;
-			}
-			break;
-		case s_pushed_wait:
-			if (!*desc.pStateJustTransitioned){
-				*desc.pTickLeft = 2000;
-				*desc.pStateJustTransitioned = 1;
-			}
-			if (desc.event == ev_state_timeout) {
-				*desc.pState = s_car_is_about_to_stop;
-				*desc.pStateJustTransitioned = 0;
-			}
-			break;
-		case s_car_is_about_to_stop:
-			if (!*desc.pStateJustTransitioned){
-				*desc.pTickLeft = 1000;
-				*desc.pStateJustTransitioned = 1;
-			}
-			if (desc.event == ev_state_timeout) {
-				*desc.pState = s_car_stop;
-				*desc.pStateJustTransitioned = 0;
-			}
-			break;
-		case s_car_stop:
-			if (!*desc.pStateJustTransitioned){
-				*desc.pTickLeft = 2000;
-				*desc.pStateJustTransitioned = 1;
-			}
-			if (desc.event == ev_state_timeout) {
-				*desc.pState = s_people_walk;
-				*desc.pStateJustTransitioned = 0;
-			}
-			break;
-		default: break;
-	  }
-}
+
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -147,9 +56,7 @@ static void MX_USART2_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-int is_button_pressed(void){
-	return GPIOC->IDR & 1 << 13;
-}
+
 /* USER CODE END 0 */
 
 /**
@@ -169,11 +76,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-  int _initialized = 0;
-  enum state state = s_init;
-  enum event event = ev_none;
-  uint32_t ticks_left_in_state, curr_tick, last_tick;
-  ticks_left_in_state = curr_tick = last_tick = 0;
+
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -197,14 +100,6 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  event = evq_pop_front();
-	  struct HANDLE_STATE_DESC handle_state_desc = {};
-	  handle_state_desc.event = event;
-	  handle_state_desc.pState = &state;
-	  handle_state_desc.pStateJustTransitioned = &_initialized;
-	  handle_state_desc.pTickLeft = tick_get_pCountDown();
-	  handle_state(handle_state_desc);
-	  set_traffic_lights(state);
   }
   /* USER CODE END 3 */
 }
@@ -312,8 +207,7 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, D_0_Pin|D_1_Pin|D_2_Pin|D_3_Pin
-                          |D_7_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOC, SEG_CLK_Pin|SEG_DIO_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, SMPS_EN_Pin|SMPS_V1_Pin|SMPS_SW_Pin, GPIO_PIN_RESET);
@@ -327,14 +221,19 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : D_0_Pin D_1_Pin D_2_Pin D_3_Pin
-                           D_7_Pin */
-  GPIO_InitStruct.Pin = D_0_Pin|D_1_Pin|D_2_Pin|D_3_Pin
-                          |D_7_Pin;
+  /*Configure GPIO pin : SEG_CLK_Pin */
+  GPIO_InitStruct.Pin = SEG_CLK_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+  HAL_GPIO_Init(SEG_CLK_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : SEG_DIO_Pin */
+  GPIO_InitStruct.Pin = SEG_DIO_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(SEG_DIO_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : SMPS_EN_Pin SMPS_V1_Pin SMPS_SW_Pin */
   GPIO_InitStruct.Pin = SMPS_EN_Pin|SMPS_V1_Pin|SMPS_SW_Pin;
@@ -355,10 +254,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LD4_GPIO_Port, &GPIO_InitStruct);
-
-  /* EXTI interrupt init*/
-  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 
   /* USER CODE BEGIN MX_GPIO_Init_2 */
 
