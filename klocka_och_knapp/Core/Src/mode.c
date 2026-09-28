@@ -22,7 +22,7 @@ void button_mode() {
 	while (1) {
 		/* deal with debouncing the button... */
 		// check b1 button (on board, active low)
-		b1_pressed = GPIO_PIN_RESET == HAL_GPIO_ReadPin(B1_GPIO_Port, B1_Pin);
+		b1_pressed = button_is_pressing();
 		qs_put_big_num(b1_pressed ? button_get_registered_press_count() : button_get_debounce_count());
 	}
 }
