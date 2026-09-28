@@ -21,7 +21,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "mode.h"
+#include "uart.h"
+#include "button.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -76,7 +78,8 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-
+  uart_set_handle(&huart2);
+  button_initialize();
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -100,6 +103,13 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	uart_print_menu();
+	int menu_choice = uart_get_menu_choice();
+	switch (menu_choice) {
+		case 1: clock_mode(); break;
+		case 2: button_mode(); break;
+		default: uart_print_bad_choice(); break;
+	}
   }
   /* USER CODE END 3 */
 }
@@ -235,6 +245,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(SEG_DIO_GPIO_Port, &GPIO_InitStruct);
 
+  /*Configure GPIO pin : MY_BTN_Pin */
+  GPIO_InitStruct.Pin = MY_BTN_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(MY_BTN_GPIO_Port, &GPIO_InitStruct);
+
   /*Configure GPIO pins : SMPS_EN_Pin SMPS_V1_Pin SMPS_SW_Pin */
   GPIO_InitStruct.Pin = SMPS_EN_Pin|SMPS_V1_Pin|SMPS_SW_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
@@ -254,6 +270,10 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LD4_GPIO_Port, &GPIO_InitStruct);
+
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI2_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI2_IRQn);
 
   /* USER CODE BEGIN MX_GPIO_Init_2 */
 
