@@ -36,6 +36,14 @@ void UARTManager::PrintLn(const char *str, ...) {
 	this->_Print("\r\n");
 }
 
+void UARTManager::PrintOv(const char* str, ...) {
+	std::va_list valist;
+		va_start(valist, str);
+		this->_PrintVA(str, valist);
+		va_end(valist);
+		this->_Print("\r");
+}
+
 char UARTManager::GetChar() {
 	this->_GetInput();
 	this->_did_error_happen = false;

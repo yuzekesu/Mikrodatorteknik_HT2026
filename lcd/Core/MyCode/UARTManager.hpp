@@ -18,6 +18,7 @@ public:
 	bool Fail();
 	void Print(const char*, ...);
 	void PrintLn(const char*, ...);
+	void PrintOv(const char*, ...);
 	char GetChar();
 	int GetDigit();
 	char GetPreviousInput();

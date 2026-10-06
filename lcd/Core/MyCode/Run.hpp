@@ -5,6 +5,7 @@
  *      Author: yuzek
  */
 #include <stm32l4xx_hal.h>
+#include "lcd.h"
 
 #ifndef MYCODE_RUN_HPP_
 #define MYCODE_RUN_HPP_
@@ -14,8 +15,10 @@ extern "C" {
 #endif // __cplusplus.
 
 struct RUN_DESC {
+	TIM_HandleTypeDef *p_htim_1MHz_lcd;
 	UART_HandleTypeDef *p_huart;
 	TIM_HandleTypeDef *p_htim_timer;
+	TextLCDType* p_hlcd;
 };
 void Run(struct RUN_DESC);
 

@@ -13,7 +13,7 @@ Timer::Timer(unsigned counter_period_per_tick_ms) : _counter_period_per_tick_ms(
 
 Timer::operator std::string() {
 	std::string result;
-	result.resize(9); // i would use ostream if ram is enough.
+	result.resize(9); // i would use ostream if ram is enough, std::string handle \0 internt, but snprintf adds \0.
 	snprintf(&(result[0]), result.size(), "%d%d:%d%d:%d%d", this->_hours / 10, this->_hours % 10, this->_minutes / 10, this->_minutes % 10, this->_seconds / 10, this->_seconds % 10);
 	return result;
 }
