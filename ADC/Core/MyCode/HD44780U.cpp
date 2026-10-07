@@ -160,8 +160,7 @@ void HD44780U::Display::Printf(const char *message, ...) {
 	char buffer[100];
 	va_list valist;
 	va_start(valist, message);
-	size_t size = vsnprintf(buffer, 0, message, valist) + 1; // + null terminated.
-	vsnprintf(buffer, size, message, valist);
+	vsnprintf(buffer, sizeof(buffer), message, valist);
 	va_end(valist);
 	this->PutStr(buffer);
 }
